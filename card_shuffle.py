@@ -70,23 +70,107 @@ class Deck:
         self.deck.insert(end_spot, pulled_card)
         print("\n=============== Moving card ===============\n")
         self.show()
-    
-    def sequence(self, num_players):
+
+        
+    def sequence(self, num_players, cards_per_player):
         # This is where we figure out if the cards are "fairly Shuffled"
         # We create a list of lists. The big list consists of the number of players
         # The other lists contain their cards
-        pass # TODO ==> Placeholder for now
+        # making a list of lists
 
-    def hand_sequence(self, num_players, cards_in_hand):
-        # This is very similar to the sequence function except it is assumeing that only a certian number of cards are being distributed
-        # into each person's hand
-        pass # TODO ==> Place holder for now
+        def is_fair(cards):
+            # This is a helper function that will recieve a list of cards and will decyfer whether or not it is fair
+            # Maybe if it's not fair it can then list out the hand 
+            # Another feature to add would be that there are levels of fairness (maybe 2 cards in a row is fair or even 3, but any more than that is bad)
+            def card_num_value(num):
+                if 'J' in num:
+                    return 11
+                elif 'Q' in num:
+                    return 12
+                elif 'K' in num:
+                    return 13
+                elif 'A' in num:
+                    return 14
+                else:
+                    return int(num)
 
-    def is_fair(self, cards):
-        # This is a helper function that will recieve a list of cards and will decyfer whether or not it is fair
-        # Maybe if it's not fair it can then list out the hand 
-        # Another feature to add would be that there are levels of fairness (maybe 2 cards in a row is fair or even 3, but any more than that is bad)
-        pass # TODO ==> Place holder for now
+            fair = True
+
+            # ===================== If there are any cards in a row ==========================
+            value = 0
+            suite = ''
+            in_a_row = 0
+            for card in range(len(cards)):
+                if card == 0:
+                    suite = cards[card][-1]
+                    value = card_num_value(cards[card][:-1])
+                else:
+                    temp_suite = cards[card][-1]
+                    temp_value = card_num_value(cards[card][:-1])
+                    if((int(temp_value) - int(value) == 1) and (temp_suite == suite)):
+                        in_a_row += 1
+                    else:
+                        in_a_row = 0
+                    value = temp_value
+                    suite = temp_suite
+                    if in_a_row == 2:
+                        fair = False
+            # ===================== If there are any three of a kinds ==========================           
+            toak = []
+            for card in cards:
+                toak.append(card[:-1])
+                toak.sort()
+            for val in toak:
+                if toak.count(val) > 2:
+                    fair = False
+            # ===================== Is the sequence fair? ==========================           
+            if fair == True:
+                print("The sequence is fair")
+                return True
+            else:
+                print("The sequence is not fair")
+                return False
+
+        def value_system(e):
+            enum = 0
+            if 'J' in e:
+                enum = 11
+            elif 'Q' in e:
+                enum = 12
+            elif 'K' in e:
+                enum = 13
+            elif 'A' in e:
+                enum = 14
+            else:
+                enum = int(e[:-1])
+            if 'H' in e:
+                return enum * 1
+            elif 'S' in e:
+                return enum * 15
+            elif 'C' in e:
+                return enum * 200
+            else:
+                return enum * 40000
+
+        if len(self.deck) % num_players != 0:
+            print("Deck is not evenly divisible by the number of players")
+            exit()
+        sequence = True
+        for a in range(num_players):
+            group = []
+            count = 0
+            for x in range(a, len(self.deck), num_players):
+                if count == cards_per_player:
+                    break
+                else:
+                    group.append(self.deck[x])
+                    count += 1
+            group.sort(key=value_system)
+            print("Hand " + str(a) + ": " + str(group))
+            if is_fair(group) == False:
+                sequence = False
+        return sequence
+        self.show()
 
 #=========================================================================================================================================================================
 # CLASS DEFINITION IS DONE
@@ -95,34 +179,46 @@ class Deck:
 cards = Deck()
 cards.display()
 cards.set_auto_display(1)
-cards.cut()
-#cards.move(51, 0) # This should take the card from the bottom of the deck and put it at the top of the deck
-#cards.random_shuffle()
-cards.shuffle()
-cards.set_auto_display(0)
-for i in range(100): # Shuffling the deck 100 times
-    cards.shuffle() 
+###cards.cut()
+####cards.move(51, 0) # This should take the card from the bottom of the deck and put it at the top of the deck
+####cards.random_shuffle()
+###cards.shuffle()
+###cards.set_auto_display(0)
+###for i in range(100): # Shuffling the deck 100 times
+###    cards.shuffle() 
+###
+###cards.display()
+###
+###cards.set_auto_display(1)
+###
+###cards.restore()
+###
+###cards.set_auto_display(0)
+###
+###for i in range(10):
+###    cards.move(0, 51) # This should take the card from the bottom of the deck and put it at the top of the deck
+###    cards.cut()
+###
+###cards.display()
+###
+###cards.restore()
+###for i in range(100):
+###    cards.shuffle()
+###    cards.cut()
+###
+###
+###cards.display()
 
-cards.display()
-
-cards.set_auto_display(1)
-
-cards.restore()
-
-cards.set_auto_display(0)
-
-for i in range(10):
-    cards.move(0, 51) # This should take the card from the bottom of the deck and put it at the top of the deck
-    cards.cut()
-
-cards.display()
-
-cards.restore()
-for i in range(100):
-    cards.shuffle()
-    cards.cut()
-
-cards.display()
-cards.restore()
+#cards.restore()
 cards.random_shuffle()
-cards.display()
+#cards.display()
+
+print(cards.sequence(4,7))
+
+cards.restore()
+cards.set_auto_display(0)
+shuffle_count = 0
+while not cards.sequence(2,7):
+    cards.shuffle()
+    shuffle_count += 1
+    print("Shuffle Count ", shuffle_count)
