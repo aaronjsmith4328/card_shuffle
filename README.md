@@ -4,8 +4,11 @@ This is basically a playground to do that
 
 I have a couple of ideas in mind, but the biggest ones are as follows
 
-Where "random" is defined by a deck in which there are no x number of contiguous cards in a row in the deck
+Where a "fair hand" is defined by a sequence of cards in which there are no 3 number of cards in a row in the deck or 3 of a kind or more
 
-- How many times would it take to get a "random" set if the bottom card was placed on the top and the deck was split?
+- How many times would it take to get a "fair hand" with different ways of shuffling
 
-... more to come
+- List of changes still needing to be made
+	- Clean up issues
+	- Call the class from other example scripts with their own shuffling algorithms
+	- Provide Documentation for the functionality with example code snippets
