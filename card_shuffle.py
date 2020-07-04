@@ -10,7 +10,7 @@ class Deck:
         self.spades = ["2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS", "AS"]
         self.hearts = ["2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH", "AH"]
         self.deck = self.clubs + self.diamonds + self.spades + self.hearts
-        self.clean_deck = self.deck # TODO ==> Make this a private attribute
+        self._clean_deck = self.deck # TODO ==> Make this a private attribute
         self.auto_display = 0
 
     def display(self):
@@ -50,7 +50,7 @@ class Deck:
         self.show()
 
     def restore(self):
-        self.deck = self.clean_deck
+        self.deck = self._clean_deck
         print("\n=============== Restoring Deck to original ===============\n")
         self.show()
 
@@ -152,8 +152,8 @@ class Deck:
             else:
                 return enum * 40000
 
-        if len(self.deck) % num_players != 0:
-            print("Deck is not evenly divisible by the number of players")
+        if (len(self.deck) % num_players != 0) or (len(self.deck) < (num_players * cards_per_player)):
+            print("Deck is not able to be distributed evenly")
             exit()
         sequence = True
         for a in range(num_players):
@@ -175,50 +175,3 @@ class Deck:
 #=========================================================================================================================================================================
 # CLASS DEFINITION IS DONE
 #=========================================================================================================================================================================
-
-cards = Deck()
-cards.display()
-cards.set_auto_display(1)
-###cards.cut()
-####cards.move(51, 0) # This should take the card from the bottom of the deck and put it at the top of the deck
-####cards.random_shuffle()
-###cards.shuffle()
-###cards.set_auto_display(0)
-###for i in range(100): # Shuffling the deck 100 times
-###    cards.shuffle() 
-###
-###cards.display()
-###
-###cards.set_auto_display(1)
-###
-###cards.restore()
-###
-###cards.set_auto_display(0)
-###
-###for i in range(10):
-###    cards.move(0, 51) # This should take the card from the bottom of the deck and put it at the top of the deck
-###    cards.cut()
-###
-###cards.display()
-###
-###cards.restore()
-###for i in range(100):
-###    cards.shuffle()
-###    cards.cut()
-###
-###
-###cards.display()
-
-#cards.restore()
-cards.random_shuffle()
-#cards.display()
-
-print(cards.sequence(4,7))
-
-cards.restore()
-cards.set_auto_display(0)
-shuffle_count = 0
-while not cards.sequence(2,7):
-    cards.shuffle()
-    shuffle_count += 1
-    print("Shuffle Count ", shuffle_count)
